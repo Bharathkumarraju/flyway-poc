@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password12345
+      MYSQL_DATABASE: sampleapp
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  flyway:
+    image: flyway/flyway:9
+    depends_on:
+      - mysql
+    command: -configFiles=/flyway/conf/flyway.conf migrate
+    volumes:
+      - ./sql:/flyway/sql
+      - ./flyway.conf:/flyway/conf/flyway.conf
+
+volumes:
+  mysql_data:
